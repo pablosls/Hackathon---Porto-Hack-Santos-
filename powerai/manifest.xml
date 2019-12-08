@@ -1,0 +1,7 @@
+applications:
+- name: testepowerai
+  memory: 256M
+  instances: 1
+  buildpack: sdk-for-nodejs
+
+

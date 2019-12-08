@@ -1,0 +1,208 @@
+// This sample demonstrates handling intents from an Alexa skill using the Alexa Skills Kit SDK (v2).
+// Please visit https://alexa.design/cookbook for additional examples on implementing slots, dialog management,
+// session persistence, api calls, and more. /sendAlert
+const Alexa = require('ask-sdk-core');
+
+
+
+
+const LaunchRequestHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
+    },
+    handle(handlerInput) {
+        //const speakOutput = 'Bem vindo a Pizza Pablo! Vamos pedir uma pizza? Me informe qual sabor você deseja. Temos pizza de carne, mussarela, frango com catupiri, quatro queijos e muitas outras. Qual sabor você deseja ?';
+        
+        
+        //GetNumberFactIntent();
+        
+       // getWeather('london', res => {
+        //    console.log(res);
+       // })
+        //httpGet();
+        
+        
+        const speakOutput = 'Bem vindo ao sistema de Report? O que gostaria de relatar?';
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .reprompt(speakOutput)
+            .getResponse();
+    }
+};
+/*
+const HelloWorldIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'HelloWorldIntent';
+    },
+    handle(handlerInput) {
+        const speakOutput = 'Hello World!';
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
+            .getResponse();
+    }
+    
+    const year = handlerInput.requestEnvelope.request.intent.slots.year.value;
+    const month = handlerInput.requestEnvelope.request.intent.slots.month.value;
+    const day = handlerInput.requestEnvelope.request.intent.slots.day.value;
+    
+    
+};*/
+
+const PedindoIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'PedindoIntent';
+    },
+    handle(handlerInput) {
+        
+        const sabor = handlerInput.requestEnvelope.request.intent.slots.sabor.value
+        const bebida = handlerInput.requestEnvelope.request.intent.slots.bebida.value;
+        
+        const speakOutput = 'Entendi, o problema ocorre em qual Terminal ?';
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .reprompt('o problema ocorre em qual Terminal ?')
+            .getResponse();
+    }
+};
+
+const StartedInProgressPedindoIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === "IntentRequest"
+            && handlerInput.requestEnvelope.request.intent.name === "PedindoIntent"
+            && handlerInput.requestEnvelope.request.dialogState !== 'COMPLETED';
+    },
+    handle(handlerInput) {
+        const currentIntent = handlerInput.requestEnvelope.request.intent;
+        return handlerInput.responseBuilder
+            //.speak('nao entendi, fale novamente')
+            //.reprompt('qual sabor da pizza?')
+            //.addDelegateDirective()
+            //.getResponse();
+            .addDelegateDirective(currentIntent)
+            .getResponse();
+    }
+}
+
+
+const getEnderecoIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'EnderecoIntent';
+    },
+    handle(handlerInput) {
+        
+        const street = handlerInput.requestEnvelope.request.intent.slots.street.value
+        const street_numero = handlerInput.requestEnvelope.request.intent.slots.street_numero.value;
+        
+        const speakOutput = 'O report foi aberto.';
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .reprompt('Você possui alguma dúvida ?')
+            .getResponse();
+    }
+};
+
+
+
+
+
+
+
+
+const HelpIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.HelpIntent';
+    },
+    handle(handlerInput) {
+        const speakOutput = 'Você pode falar olá para mim! Como posso te ajudar?';
+
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .reprompt(speakOutput)
+            .getResponse();
+    }
+};
+const CancelAndStopIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && (Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.CancelIntent'
+                || Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.StopIntent');
+    },
+    handle(handlerInput) {
+        const speakOutput = 'Até logo!';
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .getResponse();
+    }
+};
+const SessionEndedRequestHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'SessionEndedRequest';
+    },
+    handle(handlerInput) {
+        // Any cleanup logic goes here.
+        return handlerInput.responseBuilder.getResponse();
+    }
+};
+
+// The intent reflector is used for interaction model testing and debugging.
+// It will simply repeat the intent the user said. You can create custom handlers
+// for your intents by defining them above, then also adding them to the request
+// handler chain below.
+const IntentReflectorHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest';
+    },
+    handle(handlerInput) {
+        const intentName = Alexa.getIntentName(handlerInput.requestEnvelope);
+        const speakOutput = `You just triggered ${intentName}`;
+
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
+            .getResponse();
+    }
+};
+
+// Generic error handling to capture any syntax or routing errors. If you receive an error
+// stating the request handler chain is not found, you have not implemented a handler for
+// the intent being invoked or included it in the skill builder below.
+const ErrorHandler = {
+    canHandle() {
+        return true;
+    },
+    handle(handlerInput, error) {
+        console.log(`~~~~ Error handled: ${error.stack}`);
+        const speakOutput = `Desculpe, Ocorreu um problema. Por favor, tente novamente.`;
+
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .reprompt(speakOutput)
+            .getResponse();
+    }
+};
+
+// The SkillBuilder acts as the entry point for your skill, routing all request and response
+// payloads to the handlers above. Make sure any new handlers or interceptors you've
+// defined are included below. The order matters - they're processed top to bottom.
+exports.handler = Alexa.SkillBuilders.custom()
+    .addRequestHandlers(
+        LaunchRequestHandler,
+        PedindoIntentHandler,
+        StartedInProgressPedindoIntentHandler,
+        getEnderecoIntentHandler,
+        HorarioIntentHandler,
+        DespedindoIntentHandler,
+        HelpIntentHandler,
+        CancelAndStopIntentHandler,
+        SessionEndedRequestHandler,
+        IntentReflectorHandler, // make sure IntentReflectorHandler is last so it doesn't override your custom intent handlers
+    )
+    .addErrorHandlers(
+        ErrorHandler,
+    )
+    .lambda();
